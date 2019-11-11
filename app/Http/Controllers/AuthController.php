@@ -112,6 +112,7 @@ class AuthController extends Controller {
 		$response['message'] = 'Unauthorized';
 		$response['data'] = array();
 
+		print 'Hehehe';
 		$email = 'ferdshinodas@gmail.com';
 		$password = md5( '12345' );
 		$sql_statement = ( "

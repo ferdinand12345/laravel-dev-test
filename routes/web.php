@@ -15,11 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get( '/register', 'AuthController@register_form' );
+Route::get( '/register', 'AuthController@register_form' );
 
-// Route::post( '/register', 'AuthController@register_process' );
+Route::post( '/register', 'AuthController@register_process' );
 
-// Route::get( '/login', 'AuthController@login_process' );
-// Route::get( '/dashboard', 'DashboardController@index' );
-// Route::get( '/cs', 'AuthController@check_session' );
-// Route::get( '/testing', 'AuthController@testing' );
+Route::get( '/login', 'AuthController@login_process' );
+Route::get( '/dashboard', 'DashboardController@index' );
+Route::get( '/cs', 'AuthController@check_session' );
+Route::get( '/testing', 'AuthController@testing' );
