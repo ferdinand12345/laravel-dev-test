@@ -27,5 +27,5 @@ chmod -R 777 ./vendor ./bootstrap ./database ./storage
 # 8. Run Test
 ./vendor/bin/phpunit
 
-# 9. Run Laravel on http://127.0.0.1:8000
+# 9. Run Laravel
 php artisan serve
