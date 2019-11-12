@@ -19,3 +19,7 @@ chmod -R 777 ./vendor ./bootstrap ./database ./storage
 
 # 3. Run Test
 ./vendor/bin/phpunit
+
+php artisan serve
+
+xdg-open https://stackoverflow.com
