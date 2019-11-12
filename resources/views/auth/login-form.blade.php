@@ -23,11 +23,11 @@
 							@endif
 							<div class="form-group">
 								<label>Email Address <span class="text-danger">*</span></label>
-								<input class="form-control" type="email" name="EMAIL" placeholder="Email Address">
+								<input class="form-control" type="email" name="EMAIL" placeholder="Email Address" required="required">
 							</div>
 							<div class="form-group">
 								<label>Password <span class="text-danger">*</span></label>
-								<input class="form-control" type="password" name="PASSWORD" placeholder="Password" autocomplete="off">
+								<input class="form-control" type="password" name="PASSWORD" placeholder="Password" autocomplete="off" required="required">
 							</div>
 							<div class="row">
 								<div class="col-md-6">
