@@ -12,6 +12,15 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">Register</div>
 						<div class="panel-body">
+							@if ( $errors->any() )
+								<div class="alert alert-danger">
+									<ul>
+										@foreach ( $errors->all() as $error )
+											<li>{{ $error }}</li>
+										@endforeach
+									</ul>
+								</div>
+							@endif
 							<div class="form-group">
 								<label>Email Address <span class="text-danger">*</span></label>
 								<input class="form-control" type="email" name="EMAIL" value="ferdshinodas@gmail.com" placeholder="Email Address">

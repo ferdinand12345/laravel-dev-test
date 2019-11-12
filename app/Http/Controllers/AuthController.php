@@ -15,7 +15,9 @@ use Validator;
 class AuthController extends Controller {
 	
 	public function __construct() {
-		// ..
+		if( session()->has( 'LOGIN_DATA' ) ) {
+			return abort( 404 );
+		}
 	}
 
 	public function register_form() {
@@ -28,7 +30,8 @@ class AuthController extends Controller {
 			'NAME' => 'required|max:64',
 			'SURNAME' => 'max:64',
 			'EMAIL' => 'required|email|max:320',
-			'PASSWORD' => 'required|min:6|max:32',
+			'PASSWORD' => 'required|min:6|required_with:PASSWORD_CONF|same:PASSWORD_CONF',
+			'PASSWORD_CONF' => 'min:6',
 			'PHONE_NUMBER' => 'required'
 		] );
 
@@ -111,42 +114,59 @@ class AuthController extends Controller {
 		return view( 'auth/login-form' );
 	}
 
-	public function login_process( Request $req ) {
-		# Set Default Response Data
-		$response = array();
-		$response['http_status_code'] = 401;
-		$response['message'] = 'Unauthorized';
-		$response['data'] = array();
+	public function login_process( Request $request ) {
+		# Setup Validation
+		$validator = Validator::make( $request->all(), [
+			'EMAIL' => 'required|email|max:320',
+			'PASSWORD' => 'required|min:6'
+		] );
 
-		$email = $req->input( 'email' );
-		$password = md5( $req->input( 'password' ) );
-		$sql_statement = ( "
-			SELECT 
-				ID
-			FROM 
-				TM_USER
-			WHERE 
-				EMAIL = '{$email}' 
-				AND PASSWORD = '{$password}'
-			LIMIT 1
-		" );
+		# Setup Custom Validation - Check Email Address
+		$check_email = self::check_email( $request->input( 'EMAIL' ) );
+		$validator->after( function( $validator ) use ( $check_email ) {
+			if ( $check_email->COUNT == 0 ) {
+				$validator->errors()->add( 'EMAIL', 'Your email or password is wrong.' );
+			}
+		} );
 
-		$run_query = collect( \DB::select( $sql_statement ) )->first();
-
-		if ( !empty( $run_query ) ) {
-			$req->session()->put( [
-				'LOGIN_DATA' => array(
-					'ID' => $run_query->ID
-				)
-			] );
-			$response['http_status_code'] = 200;
-			$response['message'] = 'OK';
+		# Run Validation
+		if ( $validator->fails() ) {
+			return redirect( 'login' )->withErrors( $validator )->withInput();
 		}
 		else {
-			$response['message'] = 'User not found';
-		}
+			$IN_EMAIL = addslashes( $request->input( 'EMAIL' ) );
+			$IN_PASSWORD = md5( addslashes( $request->input( 'PASSWORD' ) ) );
+			$sql_statement = ( "
+				SELECT 
+					ID
+				FROM 
+					TM_USER
+				WHERE 
+					EMAIL = '{$IN_EMAIL}' 
+					AND PASSWORD = '{$IN_PASSWORD}'
+				LIMIT 1
+			" );
 
-		return response()->json( $response );
+			$run_query = collect( \DB::select( $sql_statement ) )->first();
+
+			if ( !empty( $run_query ) ) {
+				$set_login = $request->session()->put( [
+					'LOGIN_DATA' => array(
+						'ID' => $run_query->ID
+					)
+				] );
+				if ( !$set_login ) {
+					return redirect( 'dashboard' );
+				}
+				else {
+					return redirect( 'login' )->withInput();
+				}
+			}
+			else {
+				return abort( 500 );
+			}
+		}
+		
 	}
 
 	public function logout_process() {
@@ -154,21 +174,10 @@ class AuthController extends Controller {
 		return redirect( 'login' );
 	}
 
-	public function check_session( Request $req ) {
-		print '<pre>';
-		print_r( session()->all() );
-		print '</pre>';
-	}
-
-	public function testing() {
-		// $query = DB::select( "SELECT * FROM tm_user" );
-		$query = DB::insert( "INSERT INTO tm_user VALUES( NULL, 'A', 'B' )" );
-		print_r( $query );
-	}
-
-	private function check_email( $email ) {
+	private function check_email( $email, $password = '' ) {
 		# Get TRUE/FALSE from TM_USER by Email Address
 		$email = addslashes( $email );
+		$password = ( $password == '' ? '' : "AND PASSWORD = '".md5( addslashes( $password ) )."'" );
 		$query = collect( \DB::select( "
 			SELECT 
 				COUNT( 1 ) AS COUNT
@@ -176,6 +185,7 @@ class AuthController extends Controller {
 				TM_USER 
 			WHERE 
 				EMAIL = '{$email}'
+				{$password}
 		" ) )->first();
 		return $query;
 	}
