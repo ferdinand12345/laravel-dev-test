@@ -10,7 +10,7 @@
 				<form action="{{ url( 'login' ) }}" method="post">
 					{{ csrf_field() }}
 					<div class="panel panel-default">
-						<div class="panel-heading">Register</div>
+						<div class="panel-heading">Login</div>
 						<div class="panel-body">
 							@if ( $errors->any() )
 								<div class="alert alert-danger">
@@ -23,11 +23,11 @@
 							@endif
 							<div class="form-group">
 								<label>Email Address <span class="text-danger">*</span></label>
-								<input class="form-control" type="email" name="EMAIL" value="ferdshinodas@gmail.com" placeholder="Email Address">
+								<input class="form-control" type="email" name="EMAIL" placeholder="Email Address">
 							</div>
 							<div class="form-group">
 								<label>Password <span class="text-danger">*</span></label>
-								<input class="form-control" type="password" name="PASSWORD" value="123456" placeholder="Password">
+								<input class="form-control" type="password" name="PASSWORD" placeholder="Password" autocomplete="off">
 							</div>
 							<div class="row">
 								<div class="col-md-6">

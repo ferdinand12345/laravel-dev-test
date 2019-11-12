@@ -47,7 +47,7 @@
 							</div>
 							<div class="form-group">
 								<label>Phone Number <span class="text-danger">*</span></label>
-								<input class="form-control" type="text" name="PHONE_NUMBER" value="+6289514512776" placeholder="Phone Number" required="required">
+								<input class="form-control" type="text" name="PHONE_NUMBER" placeholder="Phone Number" required="required">
 							</div>
 							<div class="row">
 								<div class="col-md-6">
