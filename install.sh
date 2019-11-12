@@ -4,5 +4,5 @@
 echo "Laravel Project Installation:";
 echo "-------------------------------------------";
 
-# 1. Install Project
-php artisan client-portal:install
+# 1. Install Vendor
+composer install
