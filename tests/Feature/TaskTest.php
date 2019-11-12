@@ -52,19 +52,9 @@ class TaskTest extends TestCase {
 		$response->assertStatus( 200 );
 	}
 
-	public function test_registration_process() {
-		$random_number = rand( 10000000, 99999999 );
-		$response = $this->withHeaders( [
-			'X-CSRF-TOKEN' => csrf_token(),
-		] )->json( 'POST', '/register', [
-			'NAME' => 'Fake User',
-			'SURNAME' => 'Ke '.$random_number,
-			'PHONE_NUMBER' => '+62895'.$random_number,
-			'EMAIL' => 'fakeuser.'.$random_number.'@email.com',
-			'DOB' => '1993-11-26',
-			'PASSWORD' => 'fakeuser',
-		] );
-		$response->assertStatus( 419 );
+	public function test_login_form() {
+		$response = $this->get( '/login' );
+		$response->assertStatus( 200 );
 	}
 
 }
