@@ -19,27 +19,33 @@ class DashboardController extends Controller {
 	}
 
 	public function index( Request $req ) {
-		$session_id = session( 'LOGIN_DATA' )['ID'];
-		$data = array();
-		$data['userdata'] = collect( \DB::select( "
-			SELECT 
-				ID, 
-				NAME, 
-				SURNAME, 
-				DATE( DOB ) AS DOB, 
-				EMAIL, 
-				PHONE_NUMBER,
-				ADDRESS,
-				COUNTRY,
-				TRADING_ACCOUNT_NUMBER,
-				BALANCE,
-				OPEN_TRADES,
-				CLOSE_TRADES
-			FROM 
-				TM_USER
-			WHERE
-				ID = '{$session_id}'
-		" ) )->first();
-		return view( 'dashboard.index', $data );
+		try {
+			$session_id = session( 'LOGIN_DATA' )['ID'];
+			$data = array();
+			$query = collect( \DB::select( "
+				SELECT 
+					ID, 
+					NAME, 
+					SURNAME, 
+					DATE( DOB ) AS DOB, 
+					EMAIL, 
+					PHONE_NUMBER,
+					ADDRESS,
+					COUNTRY,
+					TRADING_ACCOUNT_NUMBER,
+					BALANCE,
+					OPEN_TRADES,
+					CLOSE_TRADES
+				FROM 
+					TM_USER
+				WHERE
+					ID = '{$session_id}'
+			" ) )->first();
+
+			return view( 'dashboard.index', $data );
+		} 
+		catch( \Illuminate\Database\QueryException $exception ) { 
+			return abort( 500 );
+		}
 	}
 }

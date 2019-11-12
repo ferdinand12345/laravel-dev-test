@@ -47,14 +47,44 @@ class TaskTest extends TestCase {
 		$this->assertEquals( $table_info_default_array, $table_info_array );
 	}
 
+	public function test_dashboard_with_login() {
+		$response = $this->withSession( [
+				'LOGIN_DATA' => [
+					'ID' => 1
+				]
+			] )
+			->get( '/dashboard' )
+			->assertStatus( 200 );
+	}
+
+	public function test_dashboard_without_login() {
+		$response = $this->get( '/dashboard' )
+			->assertRedirect( '/register' );
+	}
+
 	public function test_registration_form() {
-		$response = $this->get( '/register' );
-		$response->assertStatus( 200 );
+		$response = $this->get( '/register' )
+			->assertStatus( 200 );
+	}
+
+	public function test_register_process() {
+		$response = $this->followingRedirects()
+			->post( '/register', [] )
+			->assertStatus( 419 );
 	}
 
 	public function test_login_form() {
-		$response = $this->get( '/login' );
-		$response->assertStatus( 200 );
+		$response = $this->get( '/login' )
+			->assertStatus( 200 );
+	}
+
+	public function test_login_process() {
+		$response = $this->followingRedirects()
+			->post( '/login', [
+				'EMAIL' => 'ferdshinodas@gmail.com',
+				'PASSWORD' => '123'
+			] )
+			->assertStatus( 419 );
 	}
 
 }

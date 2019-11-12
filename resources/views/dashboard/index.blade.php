@@ -8,6 +8,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">Account Info</div>
 					<div class="panel-body">
+						@if ( isset( $userdata ) )
 						<div class="form-group">
 							<label>Name <span class="text-danger">*</span></label>
 							<input class="form-control" type="text" name="NAME" value="{{ $userdata->NAME }}" placeholder="Name" disabled>
@@ -52,6 +53,7 @@
 							<label>Close Trades <span class="text-danger">*</span></label>
 							<input class="form-control" type="text" name="CLOSE_TRADES" value="{{ $userdata->CLOSE_TRADES }}" placeholder="Close Trades" disabled>
 						</div>
+						@endif
 					</div>
 				</div>
 			</div>
