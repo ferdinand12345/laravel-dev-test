@@ -67,12 +67,6 @@ class TaskTest extends TestCase {
 			->assertStatus( 200 );
 	}
 
-	public function test_register_process() {
-		$response = $this->followingRedirects()
-			->post( '/register', [] )
-			->assertStatus( 419 );
-	}
-
 	public function test_login_form() {
 		$response = $this->get( '/login' )
 			->assertStatus( 200 );
@@ -84,7 +78,7 @@ class TaskTest extends TestCase {
 				'EMAIL' => 'ferdshinodas@gmail.com',
 				'PASSWORD' => '123'
 			] )
-			->assertStatus( 419 );
+			->assertStatus( 200 );
 	}
 
 }
