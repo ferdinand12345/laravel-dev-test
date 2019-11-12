@@ -37,11 +37,11 @@ class Installation extends Command {
 	public function handle() {
 		print 'Project installation:'.PHP_EOL;
 
-		$cmd_chmod_777 = shell_exec( 'chmod -R 777 vendor/ storage/ bootstrap/ resources/ .env' );
-		print '-> Change mode folder permission vendor, storage, bootstrap, resources, and .env to 777 - OK'.PHP_EOL;
+		// $cmd_chmod_777 = shell_exec( 'chmod -R 777 vendor/ storage/ bootstrap/ resources/ .env' );
+		// print '-> Change mode folder permission vendor, storage, bootstrap, resources, and .env to 777 - OK'.PHP_EOL;
 		
-		$check_db_connection = ( self::testing_db_connection_status() == true ? 'OK' : 'ERROR' );
-		print '-> Check database connection - '.$check_db_connection.PHP_EOL;
+		// $check_db_connection = ( self::testing_db_connection_status() == true ? 'OK' : 'ERROR' );
+		// print '-> Check database connection - '.$check_db_connection.PHP_EOL;
 	}
 
 	private function testing_db_connection_status() {
