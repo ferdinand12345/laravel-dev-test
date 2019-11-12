@@ -7,6 +7,11 @@ echo "-------------------------------------------";
 # 1. Install composer.json via Composer
 composer install
 
+php artisan key:generate
+php artisan cache:clear
+php artisan config:clear
+composer dump-autoload
+
 # 2. Change mode folder ./vendor ./bootstrap ./database & ./storage to 777 (Recursive)
 chmod -R 777 ./vendor ./bootstrap ./database ./storage
 
