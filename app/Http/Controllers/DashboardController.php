@@ -19,42 +19,27 @@ class DashboardController extends Controller {
 	}
 
 	public function index( Request $req ) {
-		print 'Hehehe';
-		$session = $req->session()->get( 'login_data' );
-		print_r($session);
-		/*
-		$sql_statement = ( "
-			INSERT INTO 
-				nbh.tm_user(
-					id, 
-					name, 
-					surname, 
-					date_of_birth, 
-					phone_number, 
-					password, 
-					email
-				) 
-			VALUES (
-				NULL, 
-				'a', 
-				NULL, 
-				'2019-11-07', 
-				'', 
-				MD5( '12345' ),
-				'ferdshinodas@gmail.com'
-			)
-		" );
-
-		try {
-			$run_query = DB::insert( $sql_statement );
-			if ( $run_query == true ) {
-				print 'Success';
-			}
-		} 
-		catch( \Illuminate\Database\QueryException $exception ) { 
-			dd( $exception->getMessage() );
-			print 'Oops Error';
-		}
-		*/
+		$session_id = session( 'LOGIN_DATA' )['ID'];
+		$data = array();
+		$data['userdata'] = collect( \DB::select( "
+			SELECT 
+				ID, 
+				NAME, 
+				SURNAME, 
+				DATE( DOB ) AS DOB, 
+				EMAIL, 
+				PHONE_NUMBER,
+				ADDRESS,
+				COUNTRY,
+				TRADING_ACCOUNT_NUMBER,
+				BALANCE,
+				OPEN_TRADES,
+				CLOSE_TRADES
+			FROM 
+				TM_USER
+			WHERE
+				ID = '{$session_id}'
+		" ) )->first();
+		return view( 'dashboard.index', $data );
 	}
 }

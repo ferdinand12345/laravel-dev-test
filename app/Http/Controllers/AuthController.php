@@ -23,37 +23,34 @@ class AuthController extends Controller {
 	}
 
 	public function register_process( Request $request ) {
-
-		# Default Response
-		$response = array();
-		$response['http_status_code'] = 401;
-		$response['message'] = 'Unauthorized';
-		$response['data'] = array();
-
 		# Setup Validation
 		$validator = Validator::make( $request->all(), [
 			'NAME' => 'required|max:64',
 			'SURNAME' => 'max:64',
-			'EMAIL' => 'required|regex:/^.+@.+$/i',
+			'EMAIL' => 'required|email|max:320',
 			'PASSWORD' => 'required|min:6|max:32',
 			'PHONE_NUMBER' => 'required'
 		] );
 
+		# Setup Custom Validation - Check Email Address
+		$check_email = self::check_email( $request->input( 'EMAIL' ) );
+		$validator->after( function( $validator ) use ( $check_email ) {
+			if ( $check_email->COUNT > 0 ) {
+				$validator->errors()->add( 'EMAIL', 'The email is not available.');
+			}
+		} );
+
+		# Run Validation
 		if ( $validator->fails() ) {
-			#return redirect( 'post/create' )
-			#			->withErrors($validator)
-			#			->withInput();
-			print_r($validator->messages());
-			return response()->json( $response );
+			return redirect( 'register' )->withErrors( $validator )->withInput();
 		}
 		else {
-			$IN_NAME = $request->input( 'NAME' );
-			$IN_SURNAME = $request->input( 'SURNAME' );
-			$IN_PHONE_NUMBER = $request->input( 'PHONE_NUMBER' );
-			$IN_EMAIL = $request->input( 'EMAIL' );
-			$IN_DOB = date( 'Y-m-d H:i:s', strtotime( $request->input( 'DOB' ) ) );
-			$IN_PASSWORD = md5( $request->input( 'PASSWORD' ) );
-
+			$IN_NAME = addslashes( $request->input( 'NAME' ) );
+			$IN_SURNAME = addslashes( $request->input( 'SURNAME' ) );
+			$IN_PHONE_NUMBER = addslashes( $request->input( 'PHONE_NUMBER' ) );
+			$IN_EMAIL = addslashes( $request->input( 'EMAIL' ) );
+			$IN_DOB = date( 'Y-m-d H:i:s', strtotime( addslashes( $request->input( 'DOB' ) ) ) );
+			$IN_PASSWORD = md5( addslashes( $request->input( 'PASSWORD' ) ) );
 			$sql_statement = ( "
 				INSERT INTO 
 					TM_USER(
@@ -91,18 +88,27 @@ class AuthController extends Controller {
 			try {
 				$run_query = DB::insert( $sql_statement );
 				if ( $run_query == true ) {
-					$response['http_status_code'] = 200;
-					$response['message'] = 'OK';
+					$set_login = $request->session()->put( [
+						'LOGIN_DATA' => array(
+							'ID' => DB::getPdo()->lastInsertId()
+						)
+					] );
+					if ( !$set_login ) {
+						return redirect( 'dashboard' );
+					}
+					else {
+						return redirect( 'register' )->withInput();
+					}
 				}
 			} 
 			catch( \Illuminate\Database\QueryException $exception ) { 
-				// dd( $exception->getMessage() );
-				$response['http_status_code'] = 500;
-				$response['message'] = 'Internal Server Error';
+				return abort( 500 );
 			}
-
-			return response()->json( $response );
 		}
+	}
+
+	public function login_form() {
+		return view( 'auth/login-form' );
 	}
 
 	public function login_process( Request $req ) {
@@ -112,9 +118,8 @@ class AuthController extends Controller {
 		$response['message'] = 'Unauthorized';
 		$response['data'] = array();
 
-		print 'Hehehe';
-		$email = 'ferdshinodas@gmail.com';
-		$password = md5( '12345' );
+		$email = $req->input( 'email' );
+		$password = md5( $req->input( 'password' ) );
 		$sql_statement = ( "
 			SELECT 
 				ID
@@ -137,8 +142,16 @@ class AuthController extends Controller {
 			$response['http_status_code'] = 200;
 			$response['message'] = 'OK';
 		}
+		else {
+			$response['message'] = 'User not found';
+		}
 
 		return response()->json( $response );
+	}
+
+	public function logout_process() {
+		session()->flush();
+		return redirect( 'login' );
 	}
 
 	public function check_session( Request $req ) {
@@ -152,4 +165,19 @@ class AuthController extends Controller {
 		$query = DB::insert( "INSERT INTO tm_user VALUES( NULL, 'A', 'B' )" );
 		print_r( $query );
 	}
+
+	private function check_email( $email ) {
+		# Get TRUE/FALSE from TM_USER by Email Address
+		$email = addslashes( $email );
+		$query = collect( \DB::select( "
+			SELECT 
+				COUNT( 1 ) AS COUNT
+			FROM 
+				TM_USER 
+			WHERE 
+				EMAIL = '{$email}'
+		" ) )->first();
+		return $query;
+	}
+
 }

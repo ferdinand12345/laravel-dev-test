@@ -10,16 +10,16 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get( '/login', 'AuthController@login_form' );
+Route::post( '/login', 'AuthController@login_process' );
 Route::get( '/register', 'AuthController@register_form' );
-
 Route::post( '/register', 'AuthController@register_process' );
+Route::group( [ 'middleware' => 'in_session' ], function() {
+	Route::get( '/', 'DashboardController@index' );
+	Route::get( '/dashboard', 'DashboardController@index' );
+	Route::get( '/logout', 'AuthController@logout_process' );
 
-Route::get( '/login', 'AuthController@login_process' );
-Route::get( '/dashboard', 'DashboardController@index' );
+} );
+
 Route::get( '/cs', 'AuthController@check_session' );
 Route::get( '/testing', 'AuthController@testing' );
