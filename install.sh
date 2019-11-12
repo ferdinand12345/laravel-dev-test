@@ -7,6 +7,8 @@ echo "-------------------------------------------";
 # 1. Install composer.json via Composer
 composer install
 
+mv env .env
+
 php artisan key:generate
 php artisan cache:clear
 php artisan config:clear
