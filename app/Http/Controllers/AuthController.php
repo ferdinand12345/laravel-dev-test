@@ -20,6 +20,7 @@ class AuthController extends Controller {
 		}
 	}
 
+	/*
 	public function register_form() {
 		return view( 'auth/register-form' );
 	}
@@ -172,6 +173,141 @@ class AuthController extends Controller {
 	public function logout_process() {
 		session()->flush();
 		return redirect( 'login' );
+	}
+
+	private function check_email( $email, $password = '' ) {
+		# Get TRUE/FALSE from TM_USER by Email Address
+		$email = addslashes( $email );
+		$password = ( $password == '' ? '' : "AND PASSWORD = '".md5( addslashes( $password ) )."'" );
+		$query = collect( \DB::select( "
+			SELECT 
+				COUNT( 1 ) AS COUNT
+			FROM 
+				TM_USER 
+			WHERE 
+				EMAIL = '{$email}'
+				{$password}
+		" ) )->first();
+		return $query;
+	}
+	*/
+
+	public function login_process( Request $request ) {
+		// $IN_EMAIL = addslashes( $request->input( 'EMAIL' ) );
+		// $IN_PASSWORD = md5( addslashes( $request->input( 'PASSWORD' ) ) );
+		$IN_EMAIL = 'admin@email.com';
+		$IN_PASSWORD = md5( '1234567890' );
+		$sql_statement = ( "
+			SELECT 
+				A.ID,
+				A.EMAIL,
+				A.ROLE_ID,
+				B.NAME AS ROLE_NAME
+			FROM 
+				TM_USER A
+				INNER JOIN TM_ROLE B
+					ON A.ROLE_ID = B.ID
+			WHERE 
+				A.EMAIL = '{$IN_EMAIL}' 
+				AND A.PASSWORD = '{$IN_PASSWORD}'
+			LIMIT 1
+		" );
+
+		$run_query = collect( \DB::select( $sql_statement ) )->first();
+
+		if ( !empty( $run_query ) ) {
+			$set_login = $request->session()->put( [
+				'LOGIN_DATA' => array(
+					'ID' => $run_query->ID,
+					'ROLE_ID' => $run_query->ROLE_ID,
+					'ROLE_NAME' => $run_query->ROLE_NAME,
+					'EMAIL' => $run_query->EMAIL
+				)
+			] );
+			if ( !$set_login ) {
+				print 'OK';
+				// return redirect( 'dashboard' );
+			}
+			else {
+				print 'Gak OK';
+				// return redirect( 'login' )->withInput();
+			}
+		}
+		else {
+			print 'Internal Server Error';
+			// return abort( 500 );
+		}
+	}
+
+	public function logout_process() {
+		session()->flush();
+		// return redirect( 'login' );
+		print 'Done';
+	}
+
+	public function check_session() {
+		$data = session()->all();
+		print '<pre>';
+		print_r($data);
+		print '</pre>';
+	}
+
+	public function user_create_process( Request $req ) {
+
+		// $IN_EMAIL = addslashes( $request->input( 'EMAIL' ) );
+		// $IN_ROLE_ID = addslashes( $request->input( 'ROLE_ID' ) );
+		// $IN_PASSWORD = md5( addslashes( $request->input( 'PASSWORD' ) ) );
+
+		$IN_EMAIL = 'xxx@email.com';
+		$IN_ROLE_ID = 2;
+		$IN_PASSWORD = md5( '1234567890' );
+		$check_email = self::check_email( $IN_EMAIL );
+
+		if ( $check_email->COUNT == 0 ) {
+			$sql_statement = ( "
+				INSERT INTO 
+					TM_USER(
+						ID, 
+						EMAIL, 
+						PASSWORD, 
+						ROLE_ID
+					) 
+				VALUES (
+					NULL, 
+					'{$IN_EMAIL}', 
+					'{$IN_PASSWORD}',
+					'{$IN_ROLE_ID}'
+				)
+			" );
+
+			try {
+				$run_query = DB::insert( $sql_statement );
+				if ( $run_query == true ) {
+					// $set_login = $request->session()->put( [
+					// 	'LOGIN_DATA' => array(
+					// 		'ID' => DB::getPdo()->lastInsertId()
+					// 	)
+					// ] );
+					// if ( !$set_login ) {
+					// 	return redirect( 'dashboard' );
+					// }
+					// else {
+					// 	return redirect( 'register' )->withInput();
+					// }
+					print 'OK';
+				}
+				else {
+					print 'Gak OK';
+				}
+			} 
+			catch( \Illuminate\Database\QueryException $exception ) { 
+				// return abort( 500 );
+				print 'Internal Server Error';
+			}
+		}
+		else {
+			print 'Email Tidak tersedia';
+		}
 	}
 
 	private function check_email( $email, $password = '' ) {
