@@ -252,11 +252,20 @@ class AuthController extends Controller {
 		print '</pre>';
 	}
 
+	public function user_create_form( Request $req ) {
+		return view( 'auth/user-create-form' );
+	}
+
 	public function user_create_process( Request $req ) {
 
 		// $IN_EMAIL = addslashes( $request->input( 'EMAIL' ) );
 		// $IN_ROLE_ID = addslashes( $request->input( 'ROLE_ID' ) );
 		// $IN_PASSWORD = md5( addslashes( $request->input( 'PASSWORD' ) ) );
+
+		print '<pre>';
+		print_r( $_POST );
+		print '</pre>';
+		dd();
 
 		$IN_EMAIL = 'xxx@email.com';
 		$IN_ROLE_ID = 2;
@@ -283,21 +292,11 @@ class AuthController extends Controller {
 			try {
 				$run_query = DB::insert( $sql_statement );
 				if ( $run_query == true ) {
-					// $set_login = $request->session()->put( [
-					// 	'LOGIN_DATA' => array(
-					// 		'ID' => DB::getPdo()->lastInsertId()
-					// 	)
-					// ] );
-					// if ( !$set_login ) {
-					// 	return redirect( 'dashboard' );
-					// }
-					// else {
-					// 	return redirect( 'register' )->withInput();
 					// }
 					print 'OK';
 				}
 				else {
-					print 'Gak OK';
+					create-user
 				}
 			} 
 			catch( \Illuminate\Database\QueryException $exception ) { 
