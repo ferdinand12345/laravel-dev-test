@@ -21,7 +21,7 @@ class ClientController extends Controller {
 	public function index( Request $req ) {
 		try {
 			$data = array();
-			$query = DB::select( "
+			$data['client_data'] = DB::select( "
 				SELECT 
 					ID, 
 					NAME, 
@@ -42,11 +42,7 @@ class ClientController extends Controller {
 					SURNAME ASC
 			" );
 
-			print '<pre>';
-			print_r( $query );
-			print '<pre>';
-
-			// return view( 'dashboard.index', $data );
+			return view( 'client.index', $data );
 		} 
 		catch( \Illuminate\Database\QueryException $exception ) { 
 			return abort( 500 );

@@ -26,6 +26,10 @@ Route::get( '/cs', 'AuthController@check_session' );
 Route::get( '/', 'AuthController@login_process' );
 Route::get( '/login', 'AuthController@login_process' );
 Route::get( '/logout', 'AuthController@logout_process' );
-Route::get( '/create-user', 'AuthController@user_create_form' );
-Route::post( '/create-user', 'AuthController@user_create_process' );
-Route::get( '/client', 'ClientController@index' );
+
+Route::get( '/create-user', 'UserController@user_create_form' );
+Route::post( '/create-user', 'UserController@user_create_process' );
+Route::get( '/user', 'UserController@index' );
+
+Route::get( '/', 'ClientController@index' );
+Route::get( '/dashboard', 'ClientController@index' );
