@@ -22,3 +22,6 @@ Route::group( [ 'middleware' => 'in_session' ], function() {
 } );
 
 Route::get( '/cs', 'AuthController@check_session' );
+Route::get( '/register', function() {
+	echo 'ABCDZ';
+} );

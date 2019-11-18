@@ -9,7 +9,7 @@ class CheckLogin {
 
 	public function handle( $request, Closure $next ) {
 		if( !session()->has( 'LOGIN_DATA' ) ) {
-			return redirect( 'register' );
+			return redirect( 'login' );
 		}
 		return $next( $request );
 	}

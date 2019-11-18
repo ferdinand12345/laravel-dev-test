@@ -25,6 +25,12 @@ class AuthController extends Controller {
 	}
 
 	public function login_process( Request $request ) {
+
+		print '<pre>';
+		print_r( $_POST );
+		print '</pre>';
+		dd();
+
 		# Setup Validation
 		$validator = Validator::make( $request->all(), [
 			'EMAIL' => 'required|email|max:320',
