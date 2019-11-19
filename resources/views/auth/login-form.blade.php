@@ -4,7 +4,7 @@
 	<div class="container">
 		<div class="row" style="margin-top:40px;">
 			<div class="col-md-6">
-				<h1 class="text-center">Back Office App</h1>
+				<!-- <h1 class="text-center">Back Office App</h1> -->
 			</div>
 			<div class="col-md-6">
 				<form action="{{ url( 'login' ) }}" method="post">
