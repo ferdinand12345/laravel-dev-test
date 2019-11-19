@@ -31,7 +31,6 @@
 							</div>
 							<div class="row">
 								<div class="col-md-6">
-									Don't have an account? <a href="{{ url( 'register' ) }}">Register</a>.
 								</div>
 								<div class="col-md-6">
 									<button type="submit" class="btn btn-primary btn-block pull-right">Login</button>

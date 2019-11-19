@@ -10,26 +10,22 @@
 						User Data <span class="pull-right"><a class="btn btn-primary btn-xs" href="{{ url( 'create-user' ) }}">Create User</a></span>
 					</div>
 					<div class="panel-body">
-						<table id="example" class="table table-striped table-bordered" style="width:100%">
+						<table id="table" class="table table-striped table-bordered" style="width:100%">
 							<thead>
 								<tr>
-									<th>Name</th>
-									<th>Position</th>
-									<th>Office</th>
-									<th>Age</th>
-									<th>Start date</th>
-									<th>Salary</th>
+									<th width="50%">EMAIL</th>
+									<th width="50%">ROLE</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>Tiger Nixon</td>
-									<td>System Architect</td>
-									<td>Edinburgh</td>
-									<td>61</td>
-									<td>2011/04/25</td>
-									<td>$320,800</td>
-								</tr>
+								@if( !empty( $user_data ) )
+									@foreach( $user_data as $user )
+										<tr>
+											<td>{{ $user->EMAIL }}</td>
+											<td>{{ $user->ROLE_NAME }}</td>
+										</tr>
+									@endforeach
+								@endif
 							</tbody>
 						</table>
 					</div>
@@ -41,7 +37,7 @@
 @section( 'scripts' )
 	<script type="text/javascript">
 		$( document).ready( function() {
-			$( '#example' ).DataTable();
+			$( '#table' ).DataTable();
 		} );
 	</script>
 @endsection

@@ -19,7 +19,19 @@ class UserController extends Controller {
 	}
 
 	public function index() {
-		return view( 'user/index' );
+		$data['user_data'] = DB::select( "
+			SELECT
+				A.ID,
+				A.EMAIL,
+				B.NAME AS ROLE_NAME
+			FROM
+				TM_USER A
+				INNER JOIN TM_ROLE B ON B.ID = A.ROLE_ID
+			ORDER BY
+				B.ID ASC,
+				A.EMAIL ASC
+		" );
+		return view( 'user/index', $data );
 	}
 
 	public function user_create_form( Request $req ) {
