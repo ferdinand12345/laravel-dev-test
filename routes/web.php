@@ -15,6 +15,7 @@ Route::post( '/login', 'AuthController@login_process' );
 Route::group( [ 'middleware' => 'in_session' ], function() {
 	Route::get( '/', 'ClientController@index' );
 	Route::get( '/dashboard', 'ClientController@index' );
+	Route::get( '/client', 'ClientController@index' );
 	Route::get( '/create-user', 'UserController@user_create_form' );
 	Route::post( '/create-user', 'UserController@user_create_process' );
 	Route::get( '/user', 'UserController@index' );
