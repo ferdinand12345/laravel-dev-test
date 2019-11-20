@@ -151,34 +151,12 @@ class TaskTest extends TestCase {
 			->assertStatus( 404 );
 	}
 
-	public function test_login_process() {
-		$response = $this->visit('/register')
-			->type( 'admin@email.com', 'EMAIL' )
-			->type( '1234567890', 'PASSWORD' )
-			->press( 'Login' )
-			->seePageIs( '/dashboard' );
-	}
-	
-
-	/*
-	public function test_registration_form() {
-		$response = $this->get( '/register' )
-			->assertStatus( 200 );
-	}
-
-	public function test_login_form() {
-		$response = $this->get( '/login' )
-			->assertStatus( 200 );
-	}
-
-	public function test_login_process() {
-		$response = $this->followingRedirects()
-			->post( '/login', [
-				'EMAIL' => 'ferdshinodas@gmail.com',
-				'PASSWORD' => '123'
-			] )
-			->assertStatus( 200 );
-	}
-	*/
+	// public function test_login_process() {
+	// 	$response = $this->visit('/register')
+	// 		->type( 'admin@email.com', 'EMAIL' )
+	// 		->type( '1234567890', 'PASSWORD' )
+	// 		->press( 'Login' )
+	// 		->seePageIs( '/dashboard' );
+	// }
 
 }
