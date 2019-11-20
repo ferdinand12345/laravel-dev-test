@@ -47,7 +47,7 @@
 								<div class="col-md-6">
 								</div>
 								<div class="col-md-6">
-									<button type="submit" class="btn btn-primary btn-block pull-right">Login</button>
+									<input type="submit" class="btn btn-primary btn-block pull-right" value="Login">
 								</div>
 							</div>
 						</div>
