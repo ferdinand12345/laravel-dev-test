@@ -7,13 +7,17 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#"><!-- Back Office --></a>
+			<a class="navbar-brand" href="#">Back Office</a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="{{ url( 'dashboard' ) }}">Dashboard</a></li>
-				<!-- <li><a href="{{ url( 'client' ) }}">Client</a></li> -->
-				<li><a href="{{ url( 'user' ) }}">User</a></li>
+				@php
+					$session = session( 'LOGIN_DATA' );
+				@endphp
+				@if( $session['ROLE_ID'] == 1 )
+					<li><a href="{{ url( 'user' ) }}">User</a></li>
+				@endif
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">

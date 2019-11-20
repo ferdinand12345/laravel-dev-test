@@ -15,9 +15,6 @@ use Validator;
 class AuthController extends Controller {
 	
 	public function __construct() {
-		if( session()->has( 'LOGIN_DATA' ) ) {
-			return abort( 404 );
-		}
 	}
 
 	public function login_form() {
@@ -91,13 +88,6 @@ class AuthController extends Controller {
 	public function logout_process() {
 		session()->flush();
 		return redirect( 'login' );
-	}
-
-	public function check_session() {
-		$data = session()->all();
-		print '<pre>';
-		print_r($data);
-		print '</pre>';
 	}
 
 	private function check_email( $email, $password = '' ) {

@@ -7,10 +7,15 @@
 			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Client Data <span class="pull-right"><a class="btn btn-primary btn-xs" href="{{ url( 'create-user' ) }}">Create Client</a></span>
+						Client Data
 					</div>
 					<div class="panel-body">
 						<div class="col-md-6">
+							@if ( $save_status == true )
+								<div class="alert alert-info">
+									Client has been updated.
+								</div>
+							@endif
 							<form action="{{ url( 'client/'.$client->ID ) }}" method="post">
 								{{ csrf_field() }}
 								@if ( $errors->any() )
@@ -33,19 +38,22 @@
 								</div>
 								<div class="form-group">
 									<label>Date of Birth <span class="text-danger">*</span></label>
-									<input class="form-control" type="date" name="DOB" value="{{ $client->DOB }}" placeholder="Date of Birth" required="required">
+									<input id="datepicker" width="270" class="form-control" type="date" name="DOB" value="{{ $client->DOB }}" placeholder="Date of Birth" required="required">
+									<small class="form-text text-muted">2000-12-31</small>
 								</div>
 								<div class="form-group">
 									<label>Email Address <span class="text-danger">*</span></label>
 									<input class="form-control" type="email" name="EMAIL" value="{{ $client->EMAIL }}" placeholder="Email Address" required="required">
 								</div>
 								<div class="form-group">
-									<label>Password <span class="text-danger">*</span></label>
-									<input class="form-control" type="password" value="" name="PASSWORD" placeholder="Password" required="required" autocomplete="off">
+									<label>Password</label>
+									<input class="form-control" type="password" value="" name="PASSWORD" placeholder="Password" autocomplete="off">
+									<small class="form-text text-muted">Minimum 6 digits.</small>
 								</div>
 								<div class="form-group">
-									<label>Password Conf <span class="text-danger">*</span></label>
-									<input class="form-control" type="password" name="PASSWORD_CONF" placeholder="Password Conf" required="required" autocomplete="off">
+									<label>Password Conf</label>
+									<input class="form-control" type="password" name="PASSWORD_CONF" placeholder="Password Conf" autocomplete="off">
+									<small class="form-text text-muted">Minimum 6 digits.</small>
 								</div>
 								<div class="form-group">
 									<label>Phone Number <span class="text-danger">*</span></label>
@@ -58,18 +66,32 @@
 								<div class="form-group">
 									<label>Country <span class="text-danger">*</span></label>
 									<select class="form-control" name="COUNTRY" required="required">
-										<option>-</option>
-										<option value="ID">Indonesia</option>
-										<option value="SG">Singapore</option>
+										@foreach( $country_data as $country )
+											@php
+												$selected = ( $country['CODE'] == $client->COUNTRY ? ' selected' : '' )
+											@endphp
+											<option value="{{ $country['CODE'] }}"{{ $selected }}>{{ $country['NAME'] }}</option>
+										@endforeach
 									</select>
 								</div>
 								<div class="form-group">
 									<label>Trading Account Number </label>
-									<input class="form-control" type="number" name="TRADING_ACCOUNT_NUMBER" value="{{ $client->TRADING_ACCOUNT_NUMBER }}" placeholder="Trading Account Number" autocomplete="off">
+									<input class="form-control" type="text" name="TRADING_ACCOUNT_NUMBER" value="{{ $client->TRADING_ACCOUNT_NUMBER }}" placeholder="Trading Account Number" autocomplete="off">
 								</div>
 								<div class="form-group">
 									<label>Balance</label>
-									<input class="form-control" type="number" name="BALANCE" value="{{ $client->BALANCE }}" placeholder="Balance" autocomplete="off">
+									<input class="form-control" type="text" name="BALANCE" value="{{ $client->BALANCE }}" placeholder="Balance" autocomplete="off">
+									<small class="form-text text-muted">Decimal value.</small>
+								</div>
+								<div class="form-group">
+									<label>Open Trades</label>
+									<input class="form-control" type="text" name="OPEN_TRADES" value="{{ $client->OPEN_TRADES }}" placeholder="Open Trades" autocomplete="off">
+									<small class="form-text text-muted">Decimal value.</small>
+								</div>
+								<div class="form-group">
+									<label>Close Trades</label>
+									<input class="form-control" type="text" name="CLOSE_TRADES" value="{{ $client->CLOSE_TRADES }}" placeholder="Close Trades" autocomplete="off">
+									<small class="form-text text-muted">Decimal value.</small>
 								</div>
 								<div class="row">
 									<div class="col-md-6">
@@ -89,6 +111,12 @@
 @section( 'scripts' )
 	<script type="text/javascript">
 		$( document).ready( function() {
+			$( '#datepicker' ).datepicker( {
+				format: 'yyyy-mm-dd',
+				value: '2000-12-31',
+				maxDate: '2000-12-31',
+				uiLibrary: 'bootstrap'
+			} );
 		} );
 	</script>
 @endsection

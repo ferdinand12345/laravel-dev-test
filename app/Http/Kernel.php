@@ -38,7 +38,15 @@ class Kernel extends HttpKernel
         ],
 
         'in_session' => [
-            \App\Http\Middleware\CheckLogin::class,
+            \App\Http\Middleware\InSession::class,
+        ],
+
+        'not_in_session' => [
+            \App\Http\Middleware\NotInSession::class,
+        ],
+
+        'is_admin' => [
+            \App\Http\Middleware\IsAdmin::class,
         ],
 
         'api' => [
