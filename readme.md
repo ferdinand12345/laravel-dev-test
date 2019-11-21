@@ -18,3 +18,5 @@ Title | Description
 Laravel Version | 5.8
 PHP Version | 7.2.18
 Database | SQLite
+## Others
+Please run installation in Ubuntu, CentOS, MacOS, or etc except Windows OS because it uses ShellScript which doesn't support Windows operating systems.
