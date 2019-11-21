@@ -1,14 +1,14 @@
 # Back Office Application
 ## Installation
-- 1. Clone the repository
+- First, clone the repository.
 ```bash
 git clone https://github.com/ferdinand12345/back-office.git
 ```
-- 2. Go to the clone directory
+- Second, go to the clone directory
 ```bash
-cd /path/to/the/back-office
+cd /path/to/the-clone-directory/of/back-office
 ```
-- 3. Run Shellscript for installation (Including all Laravel setup)
+- Third, run Shellscript for installation (Including all Laravel setup)
 ```bash
 ./install.sh
 ```
