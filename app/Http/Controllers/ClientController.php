@@ -143,7 +143,12 @@ class ClientController extends Controller {
 						ID = '{$IN_ID}'
 				" );
 
-				return redirect( 'client/'.$request->id.'?save_status=true' );
+				if ( $run_query == true ) {
+					return redirect( 'client/'.$request->id.'?save_status=true' );
+				}
+				else {
+					return abort( 500 );
+				}
 			} 
 			catch( \Illuminate\Database\QueryException $exception ) { 
 				return abort( 500 );

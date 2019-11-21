@@ -151,12 +151,4 @@ class TaskTest extends TestCase {
 			->assertStatus( 404 );
 	}
 
-	// public function test_login_process() {
-	// 	$response = $this->visit('/register')
-	// 		->type( 'admin@email.com', 'EMAIL' )
-	// 		->type( '1234567890', 'PASSWORD' )
-	// 		->press( 'Login' )
-	// 		->seePageIs( '/dashboard' );
-	// }
-
 }
