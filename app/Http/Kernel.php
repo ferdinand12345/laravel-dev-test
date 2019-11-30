@@ -37,18 +37,6 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
-        'in_session' => [
-            \App\Http\Middleware\InSession::class,
-        ],
-
-        'not_in_session' => [
-            \App\Http\Middleware\NotInSession::class,
-        ],
-
-        'is_admin' => [
-            \App\Http\Middleware\IsAdmin::class,
-        ],
-
         'api' => [
             'throttle:60,1',
             'bindings',
