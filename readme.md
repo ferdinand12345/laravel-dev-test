@@ -1,4 +1,5 @@
 # Niche Stack - Laravel Dev Test
+![Screen Shot 2019-12-01 at 19 36 56](https://user-images.githubusercontent.com/14433159/69914087-92cda780-1472-11ea-8728-9a0da5bc5b2f.png)
 ## Installation
 - First, clone the repository.
 ```bash
@@ -9,6 +10,9 @@ git clone https://github.com/ferdinand12345/laravel-dev-test.git
 cd /path/to/the-clone-directory/of/laravel-dev-test
 ```
 - Then edit "env" file to setup your database config (line 9-14)
+
+![Screen Shot 2019-12-01 at 15 59 20](https://user-images.githubusercontent.com/14433159/69914106-c27caf80-1472-11ea-9948-5b44240fffd8.png)
+
 ```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -38,10 +42,17 @@ DB_PASSWORD=
 	```
 	- Change mode folder ./vendor ./bootstrap ./database, ./storage, and ./public to 777 (Recursive)
 	- Done
+## Video Tutorial
+How to install and use the program
+[Video Tutorial Installation & Review.mp4](https://drive.google.com/file/d/1qADtVK19V1SoeAGB0ZXB9f8q7T7ZfR8m/view?usp=sharing)
 ## Project Information
 Title | Description
 --- | ---
 Laravel Version | 5.8
 PHP Version | 7.2.18
 Database | MySQL
-## Screenshoots
+
+## Screenshoot
+![Screen Shot 2019-12-01 at 19 37 44](https://user-images.githubusercontent.com/14433159/69914124-08397800-1473-11ea-9154-e24886763242.png)
+![Screen Shot 2019-12-01 at 19 37 19](https://user-images.githubusercontent.com/14433159/69914125-08d20e80-1473-11ea-9bc4-f064e257f31c.png)
+![Screen Shot 2019-12-01 at 19 37 07](https://user-images.githubusercontent.com/14433159/69914126-096aa500-1473-11ea-9207-c209701005de.png)
