@@ -10,8 +10,31 @@
 						Create <span class="pull-right"><a class="btn btn-primary btn-xs" href="{{ url( 'contacts' ) }}">Back</a></span>
 					</div>
 					<div class="panel-body">
-						<form action="{{ url( 'contacts/create' ) }}" method="post">
+						<form action="{{ url( 'contacts/create' ) }}" method="post" enctype="multipart/form-data">
 							{{ csrf_field() }}
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<div class="panel panel-primary">
+										<div class="panel-body">
+											<div id="image-preview" style="height:190px;background-image: url({{ url( 'assets/images/default-avatar.png' ) }});background-repeat: no-repeat;background-position: center;background-size: auto 180px;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="row">
+								<div class="col-md-4" id="image-preview" style="height:190px;background-image: url({{ url( 'assets/images/default-avatar.png' ) }});background-repeat: no-repeat;background-position: center;background-size: auto 120px;">
+								</div>
+								<div class="col-md-4">
+									<center>
+										<span class="btn btn-danger btn-file" style="margin-top:300px;">
+											<i class="fa fa-image"></i> Pilih gambar <input name="image_upload" type="file" id="image-upload">
+										</span>
+									</center>
+								</div>
+							</div> -->
+							<br />
 							<div class="row">
 								<div class="col-md-4">
 									<label>Firstname</label>
@@ -20,6 +43,10 @@
 								<div class="col-md-4">
 									<label>Lastname</label>
 									<input type="text" class="form-control" value="Shinoda" placeholder="Lastname" name="LASTNAME">
+								</div>
+								<div class="col-md-4">
+									<label>Avatar</label>
+									<input type="file" class="form-control" id="image-upload" name="AVATAR">
 								</div>
 							</div>
 							<br />
@@ -64,6 +91,10 @@
 									<label>Phone Number</label>
 									<input type="text" class="form-control" value="089514512776" name="PHONE_NUMBER" placeholder="Phone Number" required="required">
 								</div>
+								<div class="col-md-8">
+									<label>Groups</label>
+									<select name="GROUPS[]" class="select2-tags form-control" multiple="multiple"></select>
+								</div>
 							</div>
 							<br />
 							<div class="row">
@@ -87,6 +118,18 @@
 @endsection
 @section( 'scripts' )
 	<script type="text/javascript">
+		function read_upload_url( input ) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function( e ) {
+					$( '#image-preview' ).css( 'background-image', 'url('+ e.target.result +')' );
+					$( '#image-preview' ).hide();
+					$( '#image-preview' ).fadeIn( 2000 );
+				}
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+
 		$( document).ready( function() {
 			$( ".select2-country" ).select2( {
 				theme: "bootstrap",
@@ -94,7 +137,13 @@
 				maximumSelectionSize: 6,
 				containerCssClass: ':all:'
 			} );
-
+			$( "#image-upload" ).change(function() {
+				read_upload_url(this);
+			});
+			$( ".select2-tags" ).select2( {
+				tags: true,
+				tokenSeparators: [',', ' ']
+			} )
 		} );
 	</script>
 @endsection

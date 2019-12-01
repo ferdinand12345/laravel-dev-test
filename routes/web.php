@@ -15,3 +15,5 @@ Route::get( '/', 'ContactsController@index' );
 Route::get( '/contacts', 'ContactsController@index' );
 Route::get( '/contacts/create', 'ContactsController@create_form' );
 Route::post( '/contacts/create', 'ContactsController@create_process' );
+Route::post( '/contacts/data', 'ContactsController@data' );
+Route::get( '/contacts/data-group', 'ContactsController@data_group' );
