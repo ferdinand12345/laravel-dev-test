@@ -18,14 +18,17 @@ php artisan cache:clear
 # 5. Clear Config
 php artisan config:clear
 
-# 6. Dump Composer Autoload
+# 6. Migrate
+php artisan migrate
+
+# 7. Dump Composer Autoload
 composer dump-autoload
 
-# 7. Change mode folder ./vendor ./bootstrap ./database, ./storage, and ./public to 777 (Recursive)
-chmod -R 777 ./vendor ./bootstrap ./database ./storage ./public
+# 8. Seed Data Contact
+php artisan db:seed --class=tm_contact_seeder
 
-# 8. Run Test
-./vendor/bin/phpunit
+# 9. Change mode folder ./vendor ./bootstrap ./database, ./storage, and ./public to 777 (Recursive)
+chmod -R 777 ./vendor ./bootstrap ./database ./storage ./public
 
 # Laravel Project Installation
 echo "Installation is done!";
