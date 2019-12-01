@@ -1,4 +1,4 @@
-# Back Office Application
+# Niche Stack - Laravel Dev Test
 ## Installation
 - First, clone the repository.
 ```bash
@@ -8,7 +8,16 @@ git clone https://github.com/ferdinand12345/back-office.git
 ```bash
 cd /path/to/the-clone-directory/of/back-office
 ```
-- Third, run Shellscript for installation (Including all Laravel setup, test, and etc)
+- Then edit "env" file to setup database (line 9-14)
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel_dev_test
+DB_USERNAME=root
+DB_PASSWORD=
+```
+- If you use MacOS, Linux, Ubuntu, Centos or UNIX OS, just simply run Shellscript for installation (Including all Laravel setup, test, and etc)
 ```bash
 ./install.sh
 ```
