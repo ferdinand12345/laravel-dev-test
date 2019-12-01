@@ -26,6 +26,18 @@ DB_PASSWORD=
 	```bash
 	composer install
 	```
+	- Move/Rename file "env" to ".env"
+	- Run PHP Artisan
+	```bash
+	php artisan key:generate
+	php artisan cache:clear
+	php artisan config:clear
+	php artisan migrate
+	composer dump-autoload
+	php artisan db:seed --class=tm_contact_seeder
+	```
+	- Change mode folder ./vendor ./bootstrap ./database, ./storage, and ./public to 777 (Recursive)
+	- Done
 ## Project Information
 Title | Description
 --- | ---
