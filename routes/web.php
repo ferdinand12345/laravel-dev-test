@@ -17,3 +17,7 @@ Route::get( '/contacts/create', 'ContactsController@create_form' );
 Route::post( '/contacts/create', 'ContactsController@create_process' );
 Route::post( '/contacts/data', 'ContactsController@data' );
 Route::get( '/contacts/data-group', 'ContactsController@data_group' );
+Route::post( '/contacts/delete', 'ContactsController@delete_process' );
+Route::get( '/contacts/detail/{ID}', 'ContactsController@data_detail' );
+Route::get( '/contacts/edit/{ID}', 'ContactsController@edit_form' );
+Route::post( '/contacts/edit/{ID}', 'ContactsController@edit_process' );
