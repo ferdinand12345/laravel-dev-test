@@ -10,6 +10,20 @@
 						Create <span class="pull-right"><a class="btn btn-primary btn-xs" href="{{ url( 'contacts' ) }}">Back</a></span>
 					</div>
 					<div class="panel-body">
+						@if( $create_status == true )
+							<div class="alert alert-info">
+								Success!
+							</div>
+						@endif
+						@if ( $errors->any() )
+							<div class="alert alert-danger">
+								<ul>
+									@foreach ( $errors->all() as $error )
+										<li>{{ $error }}</li>
+									@endforeach
+								</ul>
+							</div>
+						@endif
 						<form action="{{ url( 'contacts/create' ) }}" method="post" enctype="multipart/form-data">
 							{{ csrf_field() }}
 							<div class="row">
@@ -27,11 +41,11 @@
 							<div class="row">
 								<div class="col-md-4">
 									<label>Firstname</label>
-									<input type="text" class="form-control" value="Ferd" name="FIRSTNAME" placeholder="Firstname" required="required">
+									<input type="text" class="form-control" value="" name="FIRSTNAME" placeholder="Firstname" required="required">
 								</div>
 								<div class="col-md-4">
 									<label>Lastname</label>
-									<input type="text" class="form-control" value="Shinoda" placeholder="Lastname" name="LASTNAME">
+									<input type="text" class="form-control" value="" placeholder="Lastname" name="LASTNAME">
 								</div>
 								<div class="col-md-4">
 									<label>Avatar</label>
@@ -42,14 +56,14 @@
 							<div class="row">
 								<div class="col-md-4">
 									<label>Email</label>
-									<input type="email" class="form-control" value="ferdshinodas@gmail.com" name="EMAIL" placeholder="Email" required="required">
+									<input type="email" class="form-control" value="" name="EMAIL" placeholder="Email" required="required">
 								</div>
 							</div>
 							<br />
 							<div class="row">
 								<div class="col-md-12">
 									<label>Address</label>
-									<textarea class="form-control" name="ADDRESS" rows="2" placeholder="Address" style="resize: none;">Jl.XXX No.4</textarea>
+									<textarea class="form-control" name="ADDRESS" rows="2" placeholder="Address" style="resize: none;"></textarea>
 								</div>
 							</div>
 							<br />
@@ -57,7 +71,6 @@
 								<div class="col-md-4">
 									<label>Country</label>
 									<select class="form-control select2-country" name="COUNTRY_ID" required="required">
-										<option>-</option>
 										@if( !empty( $country_data ) )
 											@foreach( $country_data as $country )
 												<option value="{{ $country->ID }}">{{ $country->NAME }}</option>
@@ -67,18 +80,18 @@
 								</div>
 								<div class="col-md-4">
 									<label>City</label>
-									<input type="text" class="form-control" value="Jakarta" name="CITY_NAME" placeholder="City" required="required">
+									<input type="text" class="form-control" value="" name="CITY_NAME" placeholder="City" required="required">
 								</div>
 								<div class="col-md-4">
 									<label>ZIP</label>
-									<input type="text" class="form-control" value="12345" name="ZIP_CODE" placeholder="ZIP" required="">
+									<input type="text" class="form-control" value="" name="ZIP_CODE" placeholder="ZIP" required="">
 								</div>
 							</div>
 							<br />
 							<div class="row">
 								<div class="col-md-4">
 									<label>Phone Number</label>
-									<input type="text" class="form-control" value="089514512776" name="PHONE_NUMBER" placeholder="Phone Number" required="required">
+									<input type="text" class="form-control" value="" name="PHONE_NUMBER" placeholder="Phone Number" required="required">
 								</div>
 								<div class="col-md-8">
 									<label>Groups</label>
@@ -89,13 +102,13 @@
 							<div class="row">
 								<div class="col-md-12">
 									<label>Note</label>
-									<textarea class="form-control" name="NOTE" rows="7" placeholder="Address" style="resize: none;">Aku masih disini, menunggumu kembali.</textarea>
+									<textarea class="form-control" name="NOTE" rows="7" placeholder="Note" style="resize: none;"></textarea>
 								</div>
 							</div>
 							<br />
 							<div class="row">
 								<div class="col-md-12">
-									<input type="submit" class="btn btn-primary pull-right" name="SUBMIT">
+									<input type="submit" class="btn btn-primary pull-right">
 								</div>
 							</div>
 						</form>

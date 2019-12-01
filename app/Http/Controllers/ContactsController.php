@@ -234,6 +234,7 @@ class ContactsController extends Controller {
 	public function create_form() {
 		try{
 			$data = array();
+			$data['create_status'] = ( isset( $_GET['create_status'] ) ? $_GET['create_status'] : false );
 			$data['country_data'] = DB::select( "
 				SELECT
 					ID,
@@ -258,6 +259,7 @@ class ContactsController extends Controller {
 			if( !empty( $query ) ) {
 				$data = array();
 				$data['q'] = $query;
+				$data['edit_status'] = ( isset( $_GET['edit_status'] ) ? $_GET['edit_status'] : false );
 				$data['country_data'] = DB::select( "
 					SELECT
 						ID,
@@ -289,6 +291,8 @@ class ContactsController extends Controller {
 		}
 	}
 
+
+
 	public function edit_process( Request $request ) {
 
 		$IN_ID = intval( $request->ID );
@@ -300,13 +304,14 @@ class ContactsController extends Controller {
 			'PHONE_NUMBER' => 'required|alpha_num|max:15',
 			'ZIP_CODE' => 'required|alpha_num|max:10',
 			'EMAIL' => 'required|email|max:320',
-			'COUNTRY_ID' => 'required|integer'
+			'COUNTRY_ID' => 'required|integer',
+			'NOTE' => 'required',
+			'GROUPS' => 'required|array',
 		] );
 
 		# Run Validation
 		if ( $validator->fails() ) {
-			print_r( $validator->errors() );
-			// return redirect( 'contacts/edit/'.$IN_ID )->withErrors( $validator )->withInput();
+			return redirect( 'contacts/edit/'.$IN_ID )->withErrors( $validator )->withInput();
 		}
 		else {
 			# Upload Files
@@ -355,11 +360,10 @@ class ContactsController extends Controller {
 
 			try{
 				$run_query = DB::update( $sql_statement );
-				if ( $run_query == true ) {
-					
-					# Delete Group
-					DB::delete( "DELETE FROM TM_CONTACT_GROUPS WHERE CONTACT_ID = {$IN_ID}" );
+				# Delete Group
+				$delete_groups = DB::delete( "DELETE FROM TM_CONTACT_GROUPS WHERE CONTACT_ID = {$IN_ID}" );
 
+				if( $delete_groups == true ) {
 					# Insert Group
 					$IN_GROUPS = $request->input( 'GROUPS' );
 					$IN_GROUPS_DATA = array();
@@ -388,16 +392,12 @@ class ContactsController extends Controller {
 
 					if ( empty( $IN_GROUPS_ERROR ) ) {
 						DB::commit();
+						return redirect( 'contacts/edit/'.$IN_ID.'?edit_status=true' )->withErrors( $validator )->withInput();
 					}
 					else {
 						DB::rollBack();
+						return redirect( 'contacts/edit/'.$IN_ID )->withErrors( $validator )->withInput();
 					}
-					// return redirect( 'create-user?create_status=true' );
-				}
-				else {
-					DB::rollBack();
-					print 'Error cuys2';
-					return redirect( 'create-user' )->withErrors( $validator )->withInput();
 				}
 			} 
 			catch( \Illuminate\Database\QueryException $exception ) { 
@@ -408,110 +408,159 @@ class ContactsController extends Controller {
 
 	public function create_process( Request $request ) {
 
-		# Upload Files
-		$IN_AVATAR_FULLPATH = 'assets/images/default-avatar.png'; // Default Avatar if upload doesn't exists.
-		if( $request->hasFile( 'AVATAR' ) ) {
-			try {
-				$IN_AVATAR = $request->file( 'AVATAR');
-				$IN_AVATAR_FILENAME = 'AVATAR-ID-'.time().'.'.$IN_AVATAR->getClientOriginalExtension();
-				$IN_AVATAR_FULLPATH = 'assets/images/user-upload/'.$IN_AVATAR_FILENAME;
-				$IN_AVATAR->move( public_path( 'assets/images/user-upload' ), $IN_AVATAR_FULLPATH );
+		$validator = Validator::make( $request->all(), [
+			'FIRSTNAME' => 'required|max:64',
+			'LASTNAME' => 'required|max:64',
+			'CITY_NAME' => 'required|max:64',
+			'PHONE_NUMBER' => 'required|alpha_num|max:15',
+			'ZIP_CODE' => 'required|alpha_num|max:10',
+			'EMAIL' => 'required|email|max:320',
+			'COUNTRY_ID' => 'required|integer',
+			'NOTE' => 'required',
+			'GROUPS' => 'required|array',
+		] );
+
+		# Setup Custom Validation - Check Email Address
+		$check_email = self::check_email( $request->input( 'EMAIL' ), $request->input( 'PHONE_NUMBER' ) );
+		$validator->after( function( $validator ) use ( $check_email ) {
+			if ( $check_email->COUNT > 0 ) {
+				$validator->errors()->add( 'EMAIL', 'The email/phone number is not available.');
 			}
-			catch( Exception $exception ){
-				print 'Exception: '.$exception->getMessage();
-			}
+		} );
+
+		# Run Validation
+		if ( $validator->fails() ) {
+			return redirect( 'contacts/create' )->withErrors( $validator )->withInput();
 		}
+		else {
 
-		# Insert To Contact
-		$IN_FIRSTNAME = addslashes( $request->input( 'FIRSTNAME' ) );
-		$IN_LASTNAME = addslashes( $request->input( 'LASTNAME' ) );
-		$IN_EMAIL =  addslashes( $request->input( 'EMAIL' ) );
-		$IN_ADDRESS =  addslashes( $request->input( 'ADDRESS' ) );
-		$IN_COUNTRY_ID =  addslashes( $request->input( 'COUNTRY_ID' ) );
-		$IN_CITY_NAME =  addslashes( $request->input( 'CITY_NAME' ) );
-		$IN_ZIP_CODE =  addslashes( $request->input( 'ZIP_CODE' ) );
-		$IN_PHONE_NUMBER =  addslashes( $request->input( 'PHONE_NUMBER' ) );
-		$IN_NOTE = addslashes( $request->input( 'NOTE' ) );
+			# Upload Files
+			$IN_AVATAR_FULLPATH = 'assets/images/default-avatar.png'; // Default Avatar if upload doesn't exists.
+			if( $request->hasFile( 'AVATAR' ) ) {
+				try {
+					$IN_AVATAR = $request->file( 'AVATAR');
+					$IN_AVATAR_FILENAME = 'AVATAR-ID-'.time().'.'.$IN_AVATAR->getClientOriginalExtension();
+					$IN_AVATAR_FULLPATH = 'assets/images/user-upload/'.$IN_AVATAR_FILENAME;
+					$IN_AVATAR->move( public_path( 'assets/images/user-upload' ), $IN_AVATAR_FULLPATH );
+				}
+				catch( Exception $exception ){
+					print 'Exception: '.$exception->getMessage();
+				}
+			}
 
-		DB::beginTransaction();
-		$sql_statement = ( "
-			INSERT INTO 
-				TM_CONTACT(
-					ID, 
-					AVATAR,
-					FIRSTNAME,
-					LASTNAME,
-					EMAIL,
-					ADDRESS,
-					COUNTRY_ID,
-					CITY_NAME,
-					ZIP_CODE,
-					PHONE_NUMBER,
-					NOTE
-				) 
-			VALUES (
-				NULL, 
-				'{$IN_AVATAR_FULLPATH}', 
-				'{$IN_FIRSTNAME}', 
-				'{$IN_LASTNAME}', 
-				'{$IN_EMAIL}', 
-				'{$IN_ADDRESS}', 
-				{$IN_COUNTRY_ID}, 
-				'{$IN_CITY_NAME}', 
-				'{$IN_ZIP_CODE}', 
-				'{$IN_PHONE_NUMBER}', 
-				'{$IN_NOTE}'
-			)
-		" );
+			# Insert To Contact
+			$IN_FIRSTNAME = addslashes( $request->input( 'FIRSTNAME' ) );
+			$IN_LASTNAME = addslashes( $request->input( 'LASTNAME' ) );
+			$IN_EMAIL =  addslashes( $request->input( 'EMAIL' ) );
+			$IN_ADDRESS =  addslashes( $request->input( 'ADDRESS' ) );
+			$IN_COUNTRY_ID =  addslashes( $request->input( 'COUNTRY_ID' ) );
+			$IN_CITY_NAME =  addslashes( $request->input( 'CITY_NAME' ) );
+			$IN_ZIP_CODE =  addslashes( $request->input( 'ZIP_CODE' ) );
+			$IN_PHONE_NUMBER =  addslashes( $request->input( 'PHONE_NUMBER' ) );
+			$IN_NOTE = addslashes( $request->input( 'NOTE' ) );
 
-		try{
-			$run_query = DB::insert( $sql_statement );
-			if ( $run_query == true ) {
+			DB::beginTransaction();
+			$sql_statement = ( "
+				INSERT INTO 
+					TM_CONTACT(
+						ID, 
+						AVATAR,
+						FIRSTNAME,
+						LASTNAME,
+						EMAIL,
+						ADDRESS,
+						COUNTRY_ID,
+						CITY_NAME,
+						ZIP_CODE,
+						PHONE_NUMBER,
+						NOTE
+					) 
+				VALUES (
+					NULL, 
+					'{$IN_AVATAR_FULLPATH}', 
+					'{$IN_FIRSTNAME}', 
+					'{$IN_LASTNAME}', 
+					'{$IN_EMAIL}', 
+					'{$IN_ADDRESS}', 
+					{$IN_COUNTRY_ID}, 
+					'{$IN_CITY_NAME}', 
+					'{$IN_ZIP_CODE}', 
+					'{$IN_PHONE_NUMBER}', 
+					'{$IN_NOTE}'
+				)
+			" );
 
-				# Insert Group
-				$IN_GROUPS = $request->input( 'GROUPS' );
-				$IN_GROUPS_DATA = array();
-				$IN_GROUPS_ERROR = array();
-				$i = 0;
-				foreach( $IN_GROUPS as $group ) {
-					try {
-						$query_insert = DB::insert( "
-							INSERT INTO
-								TM_CONTACT_GROUPS(
-									ID, NAME, CONTACT_ID
+			try{
+				$run_query = DB::insert( $sql_statement );
+				if ( $run_query == true ) {
+
+					# Insert Group
+					$IN_GROUPS = $request->input( 'GROUPS' );
+					$IN_GROUPS_DATA = array();
+					$IN_GROUPS_ERROR = array();
+					$i = 0;
+					foreach( $IN_GROUPS as $group ) {
+						try {
+							$query_insert = DB::insert( "
+								INSERT INTO
+									TM_CONTACT_GROUPS(
+										ID, NAME, CONTACT_ID
+									)
+								VALUES(
+									NULL, UPPER( '{$group}' ), 1
 								)
-							VALUES(
-								NULL, UPPER( '{$group}' ), 1
-							)
-						" );
-						if ( $query_insert != true ) {
+							" );
+							if ( $query_insert != true ) {
+								$IN_GROUPS_ERROR[$i] = $group;
+							}
+						}
+						catch( \Illuminate\Database\QueryException $exception ) { 
 							$IN_GROUPS_ERROR[$i] = $group;
 						}
+						$i++;
 					}
-					catch( \Illuminate\Database\QueryException $exception ) { 
-						$IN_GROUPS_ERROR[$i] = $group;
-					}
-					$i++;
-				}
 
-				if ( empty( $IN_GROUPS_ERROR ) ) {
-					DB::commit();
-					print 'Okay';
+					if ( empty( $IN_GROUPS_ERROR ) ) {
+						DB::commit();
+						return redirect( 'contacts/create?create_status=true' );
+					}
+					else {
+						DB::rollBack();
+						return redirect( 'contacts/create/' )->withErrors( $validator )->withInput();
+					}
 				}
 				else {
 					DB::rollBack();
-					print 'Error cuys1';
+					return redirect( 'contacts/create/' )->withErrors( $validator )->withInput();
 				}
-				// return redirect( 'create-user?create_status=true' );
+			} 
+			catch( \Illuminate\Database\QueryException $exception ) { 
+				print 'Exception: '.$exception->getMessage();
 			}
-			else {
-				DB::rollBack();
-				print 'Error cuys2';
-				// return redirect( 'create-user' )->withErrors( $validator )->withInput();
-			}
-		} 
-		catch( \Illuminate\Database\QueryException $exception ) { 
-			print 'Exception: '.$exception->getMessage();
 		}
+	}
+
+	private function check_email( $EMAIL, $PHONE_NUMBER, $current_ID = '' ) {
+		# Get TRUE/FALSE from TM_USER by Email Address
+		$EMAIL = addslashes( $EMAIL );
+		$where = "";
+		if( $current_ID != '' ) {
+			$current_ID = intval( $current_ID );
+			$where = "AND ID NOT IN ( {$current_ID} )";
+		}
+		
+		$query = collect( \DB::select( "
+			SELECT 
+				COUNT( 1 ) AS COUNT
+			FROM 
+				TM_CONTACT
+			WHERE 
+				EMAIL = '{$EMAIL}'
+				OR PHONE_NUMBER = '{$PHONE_NUMBER}'
+				$where
+				
+		" ) )->first();
+
+		return $query;
 	}
 }

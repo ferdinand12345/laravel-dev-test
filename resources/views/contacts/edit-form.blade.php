@@ -7,9 +7,14 @@
 			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Create <span class="pull-right"><a class="btn btn-primary btn-xs" href="{{ url( 'contacts' ) }}">Back</a></span>
+						Edit <span class="pull-right"><a class="btn btn-primary btn-xs" href="{{ url( 'contacts' ) }}">Back</a></span>
 					</div>
 					<div class="panel-body">
+						@if( $edit_status == true )
+							<div class="alert alert-info">
+								Success!
+							</div>
+						@endif
 						@if ( $errors->any() )
 							<div class="alert alert-danger">
 								<ul>
@@ -73,11 +78,11 @@
 											@endphp
 											@foreach( $country_data as $country )
 												@php
-													if( $country->ID == strval( $q->COUNTRY_ID ) ) {
+													if( strval( $country->ID ) == strval( $q->COUNTRY_ID ) ) {
 														$selected = ' selected';
 													}
 												@endphp
-												<option value="{{ $country->ID }}"{{ $selected }}>{{ $country->NAME }}</option>
+												<option value="{{ $country->ID }}"{{ ( $country->ID == $q->COUNTRY_ID ? ' selected' : '' ) }}>{{ $country->NAME }}</option>
 											@endforeach
 										@endif
 									</select>
