@@ -40,7 +40,7 @@ DB_PASSWORD=
 	- Done
 ## Video Tutorial
 How to install and use the program
-[Google Drive](https://drive.google.com/file/d/1qADtVK19V1SoeAGB0ZXB9f8q7T7ZfR8m/view?usp=sharing)
+[Interview Niche Stack.mp4](https://drive.google.com/file/d/1qADtVK19V1SoeAGB0ZXB9f8q7T7ZfR8m/view?usp=sharing)
 ## Project Information
 Title | Description
 --- | ---
