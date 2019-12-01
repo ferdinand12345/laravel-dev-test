@@ -69,3 +69,7 @@ Database | MySQL
 ![Screen Shot 2019-12-01 at 19 37 44](https://user-images.githubusercontent.com/14433159/69914124-08397800-1473-11ea-9154-e24886763242.png)
 ![Screen Shot 2019-12-01 at 19 37 19](https://user-images.githubusercontent.com/14433159/69914125-08d20e80-1473-11ea-9bc4-f064e257f31c.png)
 ![Screen Shot 2019-12-01 at 19 37 07](https://user-images.githubusercontent.com/14433159/69914126-096aa500-1473-11ea-9207-c209701005de.png)
+
+## Author
+
+Ferdinand [<ferdshinodas@gmail.com>]
