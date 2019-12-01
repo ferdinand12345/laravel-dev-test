@@ -2,11 +2,11 @@
 ## Installation
 - First, clone the repository.
 ```bash
-git clone https://github.com/ferdinand12345/back-office.git
+git clone https://github.com/ferdinand12345/laravel-dev-test.git
 ```
 - Second, go to the clone directory
 ```bash
-cd /path/to/the-clone-directory/of/back-office
+cd /path/to/the-clone-directory/of/laravel-dev-test
 ```
 - Then edit "env" file to setup your database config (line 9-14)
 ```bash
